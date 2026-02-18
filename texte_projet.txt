@@ -1,0 +1,38 @@
+TOUR AU NOIR
+- Le pion blanc en E6 
+est en prise, le pion
+noir en D5 DOIT le prendre.
+- Le pion noir arrive donc
+en F7 et les blancs ont
+perdu un pion.
+
+
+
+TOUR AU BLANC
+Le pion blanc n’a maintenant qu’à prendre le pion noir devant lui et cela va aussi lui permettre de se repositionner et de développer sa position désavantageuse
+
+TOUR AU NOIR
+Le pion blanc en C4 est dans une mauvaise position, cependant les noirs ne peuvent prendre qu'avec le pion en B5, le pion noir arrive donc en D5 et les blancs perdent un pion.
+
+
+TOUR AU BLANC
+Dans cette situation, le blanc pourrait déplacer son pion G4 en F5 pour contrer l'attaque du pion noir mais selon les règles énoncées plus tot, lorsqu'il est possible de prendre un pion, il faut le faire obligatoirement.
+Le pion blanc prend donc en D5 et arrive en C6 où il est directement en prise.
+
+
+TOUR AU BLANC 
+Explication stratégique : 
+Le blanc a deux possibilités : prenre a l'aide du pion en G4 ou a l'aide du pion en G6. La meilleure issue possible est de prendre du pion en G6 car cela permettra de créer une colonne qui créera une solide défense car le pion ennemi ne peut sauter qu'un seul pion a la fois.
+
+
+TOUR AU NOIR
+Nous avons ici une position de mort subite car le pion noir en F1 va devoir prendre en G2 et arriver au bout du plateau.
+
+Le pion noir désormais en H3 va prendre le pion le plus proche a savoir celui en H1 et aller se déplacer jusqu'à la colonne grise la plus proche a savoir la case B5 et redevient un pion normal 
+
+
+TOUR AU BLANC
+- En continuant un peu la partie de manière classique et avec l'avance des noirs, voici l'état de la partie et les blancs sont absolument bloqués car ou qu'ils aillent, ils se feront prendre un pion, de plus, le pion blanc en B3 ne peut pas passer en mort subite car ses deux directions sont bloquées.
+- Les blancs ne pouvant rien faire jouent quand meme en avancant le pion F5 en E4 mais l'avancer en E6 n'aurait rien changé car le pion noir en D7 l'attendait.
+- Le pion noir en F3 prend donc le pion blanc et passe désormais en D5
+- Le pion blanc n'a aucun coup a joué et signe donc la fin du jeu.
