@@ -107,7 +107,12 @@ def saisie_coordonnées(grille: list[list]) -> tuple:
             print("La position n'est pas dans la grille.")
 
 
-def afficher_grille(grille: list[list], tour_de_jeu: str):
+def afficher_grille(
+    grille: list[list],
+    tour_de_jeu: str,
+    nb_pions_captures_noir: int,
+    nb_pions_captures_blancs: int,
+):
     # print(f"...") permet de mettre une variable dans un print et d'éviter de faire print("..." + variable + "...")
 
     lettres = ["H", "G", "F", "E", "D", "C", "B", "A"]
@@ -128,7 +133,10 @@ def afficher_grille(grille: list[list], tour_de_jeu: str):
 
     print("--------------------------------------")
 
-    print(f"C'est au tour des pions {tour_de_jeu} de jouer.\n")
+    print(
+        f"Les noirs ont capturés {nb_pions_captures_noir} pièces.\nLes blancs ont capturés {nb_pions_captures_blancs} pièces.\n "
+    )
+    print(f"C'est au tour des {tour_de_jeu} de jouer.")
 
 
 def main():
@@ -138,7 +146,7 @@ def main():
     test()
 
     grille = creer_grille()
-    afficher_grille(grille, "noirs")
+    afficher_grille(grille, "blancs", 0, 0)
     saisie_coordonnées(grille)
 
 
@@ -165,7 +173,7 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
     test_est_au_bon_format()
     test_est_dans_grille()
 
-    print(" TEST OK")
+    print(" TESTS OK")
 
 
 main()
