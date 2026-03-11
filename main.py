@@ -7,9 +7,10 @@ def creer_grille() -> list[list]:
         ligne = []
 
         for _ in range(8):
+            # On ajoute dans ligne 8 caractères vides ce qui crée une ligne vide
             ligne.append(" ")
 
-        grille.append(ligne)
+        grille.append(ligne)  # Ajout de 8 lignes vides dans la grille
 
     ajouter_noirs_grille(grille)
     ajouter_blancs_grille(grille)
@@ -18,8 +19,9 @@ def creer_grille() -> list[list]:
 
 
 def ajouter_noirs_grille(grille: list[list]):
+    # Ajoute les pions noirs (3 premières lignes) dans la grille, la modifie avec effet de bord
 
-    for j in range(1, 8, 2):
+    for j in range(1, 8, 2):  # pas de 2 pour créer un damier
         grille[0][j] = "n"  # 1ere rangée
         grille[2][j] = "n"  # 3eme rangée
 
@@ -28,6 +30,7 @@ def ajouter_noirs_grille(grille: list[list]):
 
 
 def ajouter_blancs_grille(grille: list[list]):
+    # Ajoute les pions blancs (3 dernières lignes) dans la grille, la modifie avec effet de bord
 
     for j in range(1, 8, 2):
         grille[7][j] = "b"
@@ -39,6 +42,7 @@ def ajouter_blancs_grille(grille: list[list]):
 
 def est_dans_grille(ligne: str, colonne: int, grille: list[list]):
 
+    # Dictionnaire qui associe chaque lettre autorisée dans le damier à la valeur de la colonne donc A première colonne -> "A": 1, B deuxieme colonne donc "B": 2 etc
     lettre_valeur = {
         "A": 1,
         "B": 2,
@@ -49,15 +53,14 @@ def est_dans_grille(ligne: str, colonne: int, grille: list[list]):
         "G": 7,
         "H": 8,
     }
-
-    if (
-        ligne not in lettre_valeur.keys()
-    ):  # Si la ligne donnée par l'utilisateur n'est pas dans les lettres autorisées
+    # Si la ligne donnée par l'utilisateur n'est pas dans le dictionnaire (= lettres autorisées)
+    if ligne not in lettre_valeur.keys():
         return False
 
     nb_lignes = len(grille)
     nb_colonnes = len(grille[0])
 
+    # Prend la valeur associée a la lettre donnée par l'utilisateur
     valeur_lettre = lettre_valeur[ligne]
 
     if (0 < valeur_lettre <= nb_lignes) and (0 < colonne <= nb_colonnes):
@@ -87,7 +90,7 @@ def est_au_bon_format(message: str) -> bool:
 
 def saisie_coordonnées(grille: list[list]) -> tuple:
 
-    while True:
+    while True:  # Boucle tant que l'utilisateur n'a pas rentré une information valide qui menerait à un return -> sortie de fonction
         reponse_utilisateur = input("Veuillez entrez des coordonnées : ")
 
         if not est_au_bon_format(reponse_utilisateur):
@@ -104,8 +107,8 @@ def saisie_coordonnées(grille: list[list]) -> tuple:
             print("La position n'est pas dans la grille.")
 
 
-# print(f"...") permet de mettre une variable dans un print et d'éviter de faire print("..." + variable + "...")
 def afficher_grille(grille: list[list], tour_de_jeu: str):
+    # print(f"...") permet de mettre une variable dans un print et d'éviter de faire print("..." + variable + "...")
 
     lettres = ["H", "G", "F", "E", "D", "C", "B", "A"]
     # Permet d'afficher les lettres sur le coté, a chaque itération on pop le tableau (= on enleve le dernier element et on l'affiche).
@@ -125,17 +128,21 @@ def afficher_grille(grille: list[list], tour_de_jeu: str):
 
     print("--------------------------------------")
 
-    print(f"C'est au tour des pions {tour_de_jeu} de jouer.")
+    print(f"C'est au tour des pions {tour_de_jeu} de jouer.\n")
 
 
 def main():
+    # Fonction principale, appelle les autres fonctions et stocke les variables ici.
+
+    # On teste d'abord si le code tourne sinon le programme s'arrete
+    test()
 
     grille = creer_grille()
     afficher_grille(grille, "noirs")
     saisie_coordonnées(grille)
 
 
-def test():
+def test():  # Fonction de test principale, appelle chacune des petites fonctions de test et effectue un test global
 
     def test_est_au_bon_format():
 
@@ -158,6 +165,7 @@ def test():
     test_est_au_bon_format()
     test_est_dans_grille()
 
+    print(" TEST OK")
 
-test()
+
 main()
