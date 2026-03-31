@@ -1,3 +1,28 @@
+# Constante, valeur qui ne changera pas, nous donne la valeur de la colonne en fonction de la lettre.
+LETTRE_VALEUR = {
+    "A": 1,
+    "B": 2,
+    "C": 3,
+    "D": 4,
+    "E": 5,
+    "F": 6,
+    "G": 7,
+    "H": 8,
+}
+
+
+def creer_grille_milieu_partie():
+    pass
+
+
+def creer_grille_fin_partie():
+    pass
+
+
+def creer_grille_debut_partie():
+    pass
+
+
 def creer_grille() -> list[list]:
 
     grille = []
@@ -32,36 +57,27 @@ def ajouter_noirs_grille(grille: list[list]):
 def ajouter_blancs_grille(grille: list[list]):
     # Ajoute les pions blancs (3 dernières lignes) dans la grille, la modifie avec effet de bord
 
-    for j in range(1, 8, 2):
+    for j in range(0, 8, 2):
         grille[7][j] = "b"
         grille[5][j] = "b"
 
-    for j in range(0, 8, 2):
+    for j in range(1, 8, 2):
         grille[6][j] = "b"
 
 
 def est_dans_grille(ligne: str, colonne: int, grille: list[list]):
 
     # Dictionnaire qui associe chaque lettre autorisée dans le damier à la valeur de la colonne donc A première colonne -> "A": 1, B deuxieme colonne donc "B": 2 etc
-    lettre_valeur = {
-        "A": 1,
-        "B": 2,
-        "C": 3,
-        "D": 4,
-        "E": 5,
-        "F": 6,
-        "G": 7,
-        "H": 8,
-    }
+
     # Si la ligne donnée par l'utilisateur n'est pas dans le dictionnaire (= lettres autorisées)
-    if ligne not in lettre_valeur.keys():
+    if ligne not in LETTRE_VALEUR.keys():
         return False
 
     nb_lignes = len(grille)
     nb_colonnes = len(grille[0])
 
     # Prend la valeur associée a la lettre donnée par l'utilisateur
-    valeur_lettre = lettre_valeur[ligne]
+    valeur_lettre = LETTRE_VALEUR[ligne]
 
     if (0 < valeur_lettre <= nb_lignes) and (0 < colonne <= nb_colonnes):
         return True
@@ -88,10 +104,10 @@ def est_au_bon_format(message: str) -> bool:
     return True
 
 
-def saisie_coordonnées(grille: list[list]) -> tuple:
+def saisie_coordonnees(grille: list[list]) -> tuple:
 
     while True:  # Boucle tant que l'utilisateur n'a pas rentré une information valide qui menerait à un return -> sortie de fonction
-        reponse_utilisateur = input("Veuillez entrez des coordonnées : ")
+        reponse_utilisateur = str(input("Veuillez entrez des coordonnées : ")).upper()
 
         if not est_au_bon_format(reponse_utilisateur):
             print("Format invalide : [A-H][1-8]")
@@ -101,10 +117,39 @@ def saisie_coordonnées(grille: list[list]) -> tuple:
         colonne = reponse_utilisateur[1]
 
         if est_dans_grille(ligne, int(colonne), grille):
-            return (ligne, colonne)
+            return (LETTRE_VALEUR[ligne], int(colonne))
 
         else:
             print("La position n'est pas dans la grille.")
+
+
+def deplacer_pion(tour_de_jeu: str, grille: list[list], coordonnees: tuple):
+
+    lettre_couleur = tour_de_jeu[0]
+    ligne_base, colonne_base = coordonnees
+
+    if lettre_couleur != grille[ligne_base][colonne_base]:
+        return "Ce pion ne vous appartient pas."
+
+    print("Où souhaitez-vous le déplacer ?")
+    ligne_finale, colonne_finale = saisie_coordonnees(grille)
+
+    if not est_diagonale(ligne_base, colonne_base, ligne_finale, colonne_finale):
+        return "Le déplacement est incorrect, vous ne pouvez vous déplacer que de manière diagonale."
+
+
+def est_diagonale(
+    ligne_base: int, colonne_base: int, ligne_finale: int, colonne_finale: int
+) -> bool:
+
+    # On calcule la distance absolue parcourue
+    diff_lignes = abs(ligne_finale - ligne_base)
+    diff_colonnes = abs(colonne_finale - colonne_base)
+
+    # C'est une diagonale d'une seule case si la différence est de 1 sur les deux axes
+    if diff_lignes == 1 and diff_colonnes == 1:
+        return True
+    return False
 
 
 def afficher_grille(
@@ -145,9 +190,14 @@ def main():
     # On teste d'abord si le code tourne sinon le programme s'arrete
     test()
 
+    tour_de_jeu = "blancs"
+
     grille = creer_grille()
-    afficher_grille(grille, "blancs", 0, 0)
-    saisie_coordonnées(grille)
+
+    afficher_grille(grille, tour_de_jeu, 0, 0)
+    coord = saisie_coordonnees(grille)
+
+    deplacer_pion(tour_de_jeu, grille, coord)
 
 
 def test():  # Fonction de test principale, appelle chacune des petites fonctions de test et effectue un test global
@@ -170,8 +220,21 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
         assert not est_dans_grille("", 3, grille)
         assert not est_dans_grille("", 0, grille)
 
+    def test_est_diagonale():
+
+        assert est_diagonale(3, 3, 4, 4)  # Diagonale Bas-Droite
+        assert est_diagonale(3, 3, 2, 2)  # Diagonale Haut-Gauche
+        assert est_diagonale(3, 3, 4, 2)  # Diagonale Bas-Gauche
+        assert est_diagonale(3, 3, 2, 4)  # Diagonale Haut-Droite
+        assert not est_diagonale(3, 3, 3, 3)  # Aucun mouvement (reste sur la même case)
+        assert not est_diagonale(3, 3, 5, 5)  # Diagonale de 2 cases
+        assert not est_diagonale(1, 1, 8, 8)  # Diagonale de bout en bout du plateau
+        assert not est_diagonale(3, 3, 5, 4)  # +2 lignes, +1 colonne
+        assert not est_diagonale(3, 3, 2, 5)  # -1 ligne, +2 colonnes
+
     test_est_au_bon_format()
     test_est_dans_grille()
+    test_est_diagonale()
 
     print(" TESTS OK")
 
