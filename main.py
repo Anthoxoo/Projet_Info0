@@ -117,13 +117,13 @@ def saisie_coordonnees(grille: list[list]) -> tuple:
         colonne = reponse_utilisateur[1]
 
         if est_dans_grille(ligne, int(colonne), grille):
-            return (LETTRE_VALEUR[ligne], int(colonne))
+            return (LETTRE_VALEUR[ligne] - 1, int(colonne) - 1)
 
         else:
             print("La position n'est pas dans la grille.")
 
 
-def deplacer_pion(tour_de_jeu: str, grille: list[list]) -> list[list]:
+def deplacer_pion(tour_de_jeu: str, grille: list[list]):
 
     lettre_couleur = tour_de_jeu[0]
 
@@ -156,8 +156,9 @@ def deplacer_pion(tour_de_jeu: str, grille: list[list]) -> list[list]:
                 "Vous ne pouvez pas vous déplacer ici, un pion de votre équipe vous bloque."
             )
             continue
-
         break
+
+    print(case_position_finale)
 
     match case_position_finale:
         case " ":
@@ -166,8 +167,6 @@ def deplacer_pion(tour_de_jeu: str, grille: list[list]) -> list[list]:
 
         case _:
             pass
-
-    return grille
 
 
 def est_diagonale(
@@ -186,7 +185,7 @@ def est_diagonale(
 
 def demander_saisie_pion_a_deplacer(
     grille: list[list],
-) -> tuple[list[list[str]], int, int]:
+) -> tuple[str, int, int]:
 
     coordonnees = saisie_coordonnees(grille)
     ligne, colonne = coordonnees
@@ -245,9 +244,9 @@ def main():
 
     afficher_grille(grille, tour_de_jeu, 0, 0)
 
-    nouvelle_grille = deplacer_pion(tour_de_jeu, grille)
+    deplacer_pion(tour_de_jeu, grille)
     tour_de_jeu = "noir"
-    afficher_grille(nouvelle_grille, tour_de_jeu, 0, 0)
+    afficher_grille(grille, tour_de_jeu, 0, 0)
 
 
 def test():  # Fonction de test principale, appelle chacune des petites fonctions de test et effectue un test global
