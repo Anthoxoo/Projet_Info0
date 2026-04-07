@@ -123,7 +123,7 @@ def saisie_coordonnees(grille: list[list]) -> tuple:
             print("La position n'est pas dans la grille.")
 
 
-def deplacer_pion(tour_de_jeu: str, grille: list[list]):
+def deplacer_pion(grille: list[list], tour_de_jeu: str) -> int:
 
     lettre_couleur = tour_de_jeu[0]
 
@@ -157,16 +157,18 @@ def deplacer_pion(tour_de_jeu: str, grille: list[list]):
             )
             continue
         break
-
-    print(case_position_finale)
-
+    nb_pion_mange = 0
+    # Un match permet d'éviter de faire 50 if else etc, pensez le comme ceci : if case_position_finale == " ": elif case_position_finale == "b": else: ...
     match case_position_finale:
-        case " ":
+        case " ":  # Case vide
             grille[ligne_finale][colonne_finale] = pion_joueur_actif
             grille[ligne_base][colonne_base] = " "
+            nb_pion_mange += 1
 
-        case _:
+        case _:  # Case prise par un pion adverse
             pass
+
+    return nb_pion_mange
 
 
 def est_diagonale(
@@ -197,7 +199,7 @@ def demander_saisie_pion_a_deplacer(
 def afficher_grille(
     grille: list[list],
     tour_de_jeu: str,
-    nb_pions_captures_noir: int,
+    nb_pions_captures_noirs: int,
     nb_pions_captures_blancs: int,
 ):
     # print(f"...") permet de mettre une variable dans un print et d'éviter de faire print("..." + variable + "...")
@@ -221,14 +223,46 @@ def afficher_grille(
     print("--------------------------------------")
 
     print(
-        f"Les noirs ont capturés {nb_pions_captures_noir} pièces.\nLes blancs ont capturés {nb_pions_captures_blancs} pièces.\n "
+        f"Les noirs ont capturés {nb_pions_captures_noirs} pièces.\nLes blancs ont capturés {nb_pions_captures_blancs} pièces.\n "
     )
     print(f"C'est au tour des {tour_de_jeu} de jouer.\n")
 
 
 def jeu(grille: list[list], tour_de_jeu: str):
-    # Fonction qui va gérer le déroulement du jeu.
-    pass
+    nb_pions_captures_par_noirs = 0
+    nb_pions_captures_par_blancs = 0
+
+    afficher_grille(
+        grille, tour_de_jeu, nb_pions_captures_par_noirs, nb_pions_captures_par_blancs
+    )
+
+    while True:
+        afficher_grille(
+            grille,
+            tour_de_jeu,
+            nb_pions_captures_par_noirs,
+            nb_pions_captures_par_blancs,
+        )
+        nb_pions_mange = deplacer_pion(grille, tour_de_jeu)
+
+        if tour_de_jeu == "blancs":
+            nb_pions_captures_par_blancs += nb_pions_mange
+            tour_de_jeu = "noirs"
+        else:
+            nb_pions_captures_par_noirs += nb_pions_mange
+            tour_de_jeu = "blancs"
+
+        if nb_pions_captures_par_blancs == 12:
+            print(
+                "Les blancs ont remportés la victoire, ils ont capturés tous les pions adverses."
+            )
+            break
+
+        elif nb_pions_captures_par_noirs == 12:
+            print(
+                "Les noirs ont remportés la victoire, ils ont capturés tous les pions adverses."
+            )
+            break
 
 
 def main():
@@ -238,15 +272,9 @@ def main():
     test()
 
     tour_de_jeu = "blancs"
-    # jeu(grille, tour_de_jeu)
-
     grille = creer_grille()
 
-    afficher_grille(grille, tour_de_jeu, 0, 0)
-
-    deplacer_pion(tour_de_jeu, grille)
-    tour_de_jeu = "noir"
-    afficher_grille(grille, tour_de_jeu, 0, 0)
+    jeu(grille, tour_de_jeu)
 
 
 def test():  # Fonction de test principale, appelle chacune des petites fonctions de test et effectue un test global
