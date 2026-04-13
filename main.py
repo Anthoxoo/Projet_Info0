@@ -11,58 +11,48 @@ LETTRE_VALEUR = {
 }
 
 
-def creer_grille_milieu_partie():
-    pass
+def creer_grille_debut_partie() -> list[list]:
+    # Équivalent exact de ta fonction creer_grille(), mais écrit explicitement
+    return [
+        [" ", "n", " ", "n", " ", "n", " ", "n"],
+        ["n", " ", "n", " ", "n", " ", "n", " "],
+        [" ", "n", " ", "n", " ", "n", " ", "n"],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        ["b", " ", "b", " ", "b", " ", "b", " "],
+        [" ", "b", " ", "b", " ", "b", " ", "b"],
+        ["b", " ", "b", " ", "b", " ", "b", " "],
+    ]
 
 
-def creer_grille_fin_partie():
-    pass
+def creer_grille_milieu_partie() -> list[list]:
+    # Une grille où les pions sont avancés, la bataille a commencé,
+    # idéale pour tester des captures de pions.
+    return [
+        [" ", "n", " ", " ", " ", "n", " ", "n"],
+        [" ", " ", "n", " ", "n", " ", " ", " "],
+        [" ", " ", " ", "n", " ", " ", " ", "n"],
+        [" ", " ", " ", " ", "b", " ", " ", " "],
+        [" ", "n", " ", "b", " ", " ", " ", " "],
+        ["b", " ", " ", " ", "b", " ", "b", " "],
+        [" ", " ", " ", "b", " ", " ", " ", "b"],
+        ["b", " ", "b", " ", " ", " ", "b", " "],
+    ]
 
 
-def creer_grille_debut_partie():
-    pass
-
-
-def creer_grille() -> list[list]:
-
-    grille = []
-
-    # on appelle par convention _ une variable non utilisée.
-    for _ in range(8):
-        ligne = []
-
-        for _ in range(8):
-            # On ajoute dans ligne 8 caractères vides ce qui crée une ligne vide
-            ligne.append(" ")
-
-        grille.append(ligne)  # Ajout de 8 lignes vides dans la grille
-
-    ajouter_noirs_grille(grille)
-    ajouter_blancs_grille(grille)
-
-    return grille
-
-
-def ajouter_noirs_grille(grille: list[list]):
-    # Ajoute les pions noirs (3 premières lignes) dans la grille, la modifie avec effet de bord
-
-    for j in range(1, 8, 2):  # pas de 2 pour créer un damier
-        grille[0][j] = "n"  # 1ere rangée
-        grille[2][j] = "n"  # 3eme rangée
-
-    for j in range(0, 8, 2):
-        grille[1][j] = "n"  # 2eme rangée
-
-
-def ajouter_blancs_grille(grille: list[list]):
-    # Ajoute les pions blancs (3 dernières lignes) dans la grille, la modifie avec effet de bord
-
-    for j in range(0, 8, 2):
-        grille[7][j] = "b"
-        grille[5][j] = "b"
-
-    for j in range(1, 8, 2):
-        grille[6][j] = "b"
+def creer_grille_fin_partie() -> list[list]:
+    # Une grille très vide avec seulement quelques pions restants.
+    # Utile pour tester l'approche de la victoire ou les mouvements de dames (plus tard).
+    return [
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", "n", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", "b", " ", "n", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", "b", " ", " ", " ", "b", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+    ]
 
 
 def est_dans_grille(ligne: str, colonne: int, grille: list[list]):
@@ -272,9 +262,14 @@ def main():
     test()
 
     tour_de_jeu = "blancs"
-    grille = creer_grille()
+    grille = creer_grille_debut_partie()
+    # grille = creer_grille_milieu_partie()
+    # grille = creer_grille_fin_partie()
 
     jeu(grille, tour_de_jeu)
+
+
+###### TESTS #######
 
 
 def test():  # Fonction de test principale, appelle chacune des petites fonctions de test et effectue un test global
@@ -290,7 +285,7 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
 
     def test_est_dans_grille():
 
-        grille = creer_grille()
+        grille = creer_grille_debut_partie()
         assert est_dans_grille("A", 3, grille)
         assert not est_dans_grille("M", 2, grille)
         assert not est_dans_grille("B", 9, grille)
