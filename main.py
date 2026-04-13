@@ -12,7 +12,6 @@ LETTRE_VALEUR = {
 
 
 def creer_grille_debut_partie() -> list[list]:
-    # Équivalent exact de ta fonction creer_grille(), mais écrit explicitement
     return [
         [" ", "n", " ", "n", " ", "n", " ", "n"],
         ["n", " ", "n", " ", "n", " ", "n", " "],
@@ -26,8 +25,6 @@ def creer_grille_debut_partie() -> list[list]:
 
 
 def creer_grille_milieu_partie() -> list[list]:
-    # Une grille où les pions sont avancés, la bataille a commencé,
-    # idéale pour tester des captures de pions.
     return [
         [" ", "n", " ", " ", " ", "n", " ", "n"],
         [" ", " ", "n", " ", "n", " ", " ", " "],
@@ -41,8 +38,6 @@ def creer_grille_milieu_partie() -> list[list]:
 
 
 def creer_grille_fin_partie() -> list[list]:
-    # Une grille très vide avec seulement quelques pions restants.
-    # Utile pour tester l'approche de la victoire ou les mouvements de dames (plus tard).
     return [
         [" ", " ", " ", " ", " ", " ", " ", " "],
         [" ", " ", "n", " ", " ", " ", " ", " "],
@@ -115,14 +110,14 @@ def saisie_coordonnees(grille: list[list]) -> tuple:
 
 def deplacer_pion(grille: list[list], tour_de_jeu: str) -> int:
 
-    lettre_couleur = tour_de_jeu[0]
+    LETTRE_COULEUR = tour_de_jeu[0]
 
     print("Quel pion souhaitez-vous déplacer ?")
     pion_joueur_actif, ligne_base, colonne_base = demander_saisie_pion_a_deplacer(
         grille
     )
 
-    while lettre_couleur != pion_joueur_actif:
+    while not est_meme_couleur(LETTRE_COULEUR, pion_joueur_actif):
         print("Ce pion ne vous appartient pas.")
         pion_joueur_actif, ligne_base, colonne_base = demander_saisie_pion_a_deplacer(
             grille
@@ -135,30 +130,51 @@ def deplacer_pion(grille: list[list], tour_de_jeu: str) -> int:
             demander_saisie_pion_a_deplacer(grille)
         )
 
-        if not est_diagonale(ligne_base, colonne_base, ligne_finale, colonne_finale):
-            print(
-                "Le déplacement est incorrect, vous ne pouvez vous déplacer que de manière diagonale."
-            )
-            continue
+        # On calcule les distances
+        diff_lignes = abs(ligne_finale - ligne_base)
+        diff_colonnes = abs(colonne_finale - colonne_base)
 
-        if lettre_couleur == case_position_finale:
-            print(
-                "Vous ne pouvez pas vous déplacer ici, un pion de votre équipe vous bloque."
-            )
-            continue
-        break
-    nb_pion_mange = 0
-    # Un match permet d'éviter de faire 50 if else etc, pensez le comme ceci : if case_position_finale == " ": elif case_position_finale == "b": else: ...
-    match case_position_finale:
-        case " ":  # Case vide
+        # 1. Le déplacement doit être une diagonale stricte de 1 ou 2 cases
+        if diff_lignes != diff_colonnes or diff_lignes not in [1, 2]:
+            print("Déplacement incorrect. Diagonale de 1 ou 2 cases uniquement.")
+            continue  # Échec : on recommence la boucle pour demander une nouvelle case
+
+        # 2. La case d'arrivée doit TOUJOURS être vide
+        if case_position_finale != " ":
+            print("Mouvement impossible : la case d'arrivée est occupée.")
+            continue  # Échec : on recommence la boucle
+
+        # --- CAS N°1 : Déplacement simple (1 case) ---
+        if diff_lignes == 1:
             grille[ligne_finale][colonne_finale] = pion_joueur_actif
             grille[ligne_base][colonne_base] = " "
-            nb_pion_mange += 1
+            return 0  # 0 pion mangé
 
-        case _:  # Case prise par un pion adverse
-            pass
+        # --- CAS N°2 : Capture (2 cases) ---
+        if diff_lignes == 2:
+            # On calcule les coordonnées de la case du milieu
+            ligne_milieu = (ligne_base + ligne_finale) // 2
+            colonne_milieu = (colonne_base + colonne_finale) // 2
+            pion_saute = grille[ligne_milieu][colonne_milieu]
 
-    return nb_pion_mange
+            # On vérifie que la case sautée contient bien un adversaire
+            if pion_saute == " " or pion_saute == LETTRE_COULEUR:
+                print("Saut invalide : vous devez sauter par-dessus un pion adverse !")
+                continue  # Échec : on recommence la boucle
+
+            # Si toutes les vérifications sont bonnes, on applique les changements
+            grille[ligne_finale][colonne_finale] = pion_joueur_actif
+            grille[ligne_base][colonne_base] = " "
+            grille[ligne_milieu][colonne_milieu] = " "  # On efface le pion mangé
+
+            return 1  # 1 pion mangé
+
+
+def est_meme_couleur(couleur_case_base: str, couleur_case_finale: str):
+    if couleur_case_base == couleur_case_finale:
+        return True
+    else:
+        return False
 
 
 def est_diagonale(
