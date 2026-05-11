@@ -293,6 +293,43 @@ def deplacer_pion(
                 return nb_pion_mange
 
 
+def demander_mode_de_jeu() -> str:
+    mode_de_jeu = int(
+        input(
+            "Veuillez sélectionner votre mode de jeu : \n1 - joueur contre joueur\n2 - joueur contre ordinateur\n"
+        )
+    )
+
+    while mode_de_jeu not in [1, 2]:
+        mode_de_jeu = int(
+            input(
+                "Veuillez sélectionner votre mode de jeu : \n1 - joueur contre joueur\n2 - joueur contre ordinateur\n"
+            )
+        )
+
+    return "jcj" if mode_de_jeu == 1 else "jco"
+
+
+def demander_grille() -> list[list]:
+    grille_input = input(
+        "Veuillez choisir la grille en fonction de l'avancée du jeu : \n1 - type début de partie\n2 - type milieu de partie\n3 - fin de partie\n"
+    )
+
+    while grille_input not in [1, 2, 3]:
+        grille_input = int(
+            input(
+                "Veuillez choisir la grille en fonction de l'avancée du jeu : \n1 - type début de partie\n2 - type milieu de partie\n3 - fin de partie\n"
+            )
+        )
+
+    if grille_input == 1:
+        return creer_grille_debut_partie()
+    elif grille_input == 2:
+        return creer_grille_milieu_partie()
+    else:
+        return creer_grille_fin_partie()
+
+
 def afficher_grille(
     grille: list[list],
     tour_de_jeu: str,
@@ -325,13 +362,18 @@ def afficher_grille(
     print(f"C'est au tour des {tour_de_jeu} de jouer.\n")
 
 
-def jeu(grille: list[list], tour_de_jeu: str):
+def jeu(tour_de_jeu: str):
     nb_pions_captures_par_noirs = 0
     nb_pions_captures_par_blancs = 0
+
+    grille = demander_grille()
+    type_jeu = demander_mode_de_jeu()
 
     afficher_grille(
         grille, tour_de_jeu, nb_pions_captures_par_noirs, nb_pions_captures_par_blancs
     )
+
+    grille = []
 
     while True:
         afficher_grille(
@@ -374,11 +416,8 @@ def main():
     test()
 
     tour_de_jeu = "blancs"
-    grille = creer_grille_debut_partie()
-    # grille = creer_grille_milieu_partie()
-    # grille = creer_grille_fin_partie()
 
-    jeu(grille, tour_de_jeu)
+    jeu(tour_de_jeu)
 
 
 ###### TESTS #######
