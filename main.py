@@ -108,28 +108,31 @@ def saisie_coordonnees(grille: list[list]) -> tuple:
             print("La position n'est pas dans la grille.")
 
 
-def peut_capturer(ligne: int, colonne: int, couleur: str, grille: list[list]) -> bool:
-    # Les 4 directions diagonales possibles pour un saut de 2 cases (lignes, colonnes)
+def lister_captures_pion(
+    ligne: int, colonne: int, couleur: str, grille: list[list]
+) -> list[tuple]:
+    captures_possibles = []
     directions = [(-2, -2), (-2, 2), (2, -2), (2, 2)]
 
     for diff_l, diff_c in directions:
         ligne_arrivee = ligne + diff_l
         colonne_arrivee = colonne + diff_c
 
-        # On vérifie qu'on ne sort pas des limites de la grille (index 0 à 7)
         if 0 <= ligne_arrivee < 8 and 0 <= colonne_arrivee < 8:
-            # On calcule la case du milieu (le pion qui serait mangé)
             ligne_milieu = ligne + (diff_l // 2)
             colonne_milieu = colonne + (diff_c // 2)
 
             case_arrivee = grille[ligne_arrivee][colonne_arrivee]
             pion_milieu = grille[ligne_milieu][colonne_milieu]
 
-            # C'est une capture possible SI : la destination est vide ET le milieu est un ennemi
             if case_arrivee == " " and pion_milieu != " " and pion_milieu != couleur:
-                return True
+                captures_possibles.append((ligne_arrivee, colonne_arrivee))
 
-    return False
+    return captures_possibles
+
+
+def peut_capturer(ligne: int, colonne: int, couleur: str, grille: list[list]) -> bool:
+    return len(lister_captures_pion(ligne, colonne, couleur, grille)) > 0
 
 
 def analyser_distance_diagonale(
@@ -147,7 +150,7 @@ def analyser_distance_diagonale(
 def obtenir_coordonnees_milieu(
     ligne_base: int, colonne_base: int, ligne_finale: int, colonne_finale: int
 ) -> tuple[int, int]:
-    # Fait la moyenne mathématique pour trouver la case survolée lors d'un saut
+    # Fait la moyenne pour trouver la case survolée lors d'un saut
     ligne_milieu = (ligne_base + ligne_finale) // 2
     colonne_milieu = (colonne_base + colonne_finale) // 2
     return ligne_milieu, colonne_milieu
@@ -293,6 +296,43 @@ def deplacer_pion(
                 return nb_pion_mange
 
 
+def coups_possibles(grille: list[list[str]], tour_de_jeu: str) -> list[tuple]:
+    LETTRE_COULEUR = tour_de_jeu[0]
+    coups_simples = []
+    coups_captures = []
+
+    for i in range(8):
+        for j in range(8):
+            if grille[i][j] == LETTRE_COULEUR:
+                destinations_capture = lister_captures_pion(
+                    i, j, LETTRE_COULEUR, grille
+                )
+                for destination in destinations_capture:
+                    coups_captures.append(((i, j), destination))
+
+                directions_simples = []
+                if LETTRE_COULEUR == "b":
+                    directions_simples = [(-1, -1), (-1, 1)]
+                elif LETTRE_COULEUR == "n":
+                    directions_simples = [(1, -1), (1, 1)]
+
+                for diff_i, diff_j in directions_simples:
+                    ligne_finale = i + diff_i
+                    colonne_finale = j + diff_j
+
+                    if 0 <= ligne_finale < 8 and 0 <= colonne_finale < 8:
+                        if grille[ligne_finale][colonne_finale] == " ":
+                            coups_simples.append(
+                                ((i, j), (ligne_finale, colonne_finale))
+                            )
+
+    # Priorité à la capture
+    if len(coups_captures) > 0:
+        return coups_captures
+    else:
+        return coups_simples
+
+
 def demander_mode_de_jeu() -> str:
     mode_de_jeu = int(
         input(
@@ -378,12 +418,17 @@ def jeu(tour_de_jeu: str):
             nb_pions_captures_par_noirs,
             nb_pions_captures_par_blancs,
         )
-        nb_pions_mange = deplacer_pion(
-            grille,
-            tour_de_jeu,
-            nb_pions_captures_par_noirs,
-            nb_pions_captures_par_blancs,
-        )
+
+        if type_jeu == "jcj":
+            nb_pions_mange = deplacer_pion(
+                grille,
+                tour_de_jeu,
+                nb_pions_captures_par_noirs,
+                nb_pions_captures_par_blancs,
+            )
+        else:
+            # Faire la liste des coups possibles et appliquer le déplacement.
+            ...
 
         if tour_de_jeu == "blancs":
             nb_pions_captures_par_blancs += nb_pions_mange
