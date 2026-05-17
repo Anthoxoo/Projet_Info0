@@ -1,5 +1,7 @@
 # Lors du jeu, si vous voulez capturer un pion, il faut entrer la position finale qu'occupera votre pion et non le pion directement a capturer.
 
+from random import randint
+
 # Constante -> valeur qui ne changera pas, nous donne la valeur de la colonne en fonction de la lettre. Donc on la met en majuscule.
 LETTRE_VALEUR = {
     "A": 1,
@@ -177,6 +179,7 @@ def selectionner_pion_depart(
 
 
 def est_meme_couleur(couleur_case_base: str, couleur_case_finale: str):
+
     if couleur_case_base == couleur_case_finale:
         return True
     else:
@@ -296,6 +299,70 @@ def deplacer_pion(
                 return nb_pion_mange
 
 
+def deplacer_pion_ia_naive(grille: list[list], tour_de_jeu: str) -> int:
+    LETTRE_COULEUR = tour_de_jeu[0]
+    nb_pion_mange = 0
+
+    liste_des_coups = coups_possibles(grille, tour_de_jeu)
+
+    if len(liste_des_coups) == 0:
+        return 0  # Aucun coup possible, ia bloquée.
+
+    coup_choisi = liste_des_coups[randint(0, len(liste_des_coups) - 1)]
+
+    (ligne_base, colonne_base), (ligne_finale, colonne_finale) = coup_choisi
+
+    distance = analyser_distance_diagonale(
+        ligne_base, colonne_base, ligne_finale, colonne_finale
+    )
+
+    grille[ligne_finale][colonne_finale] = LETTRE_COULEUR
+    grille[ligne_base][colonne_base] = " "
+
+    # Déplacement simple
+    if distance == 1:
+        print("L'ordinateur a effectué un déplacement simple.")
+
+        return 0
+
+    # Capture, vérifier l'enchainement.
+    elif distance == 2:
+        ligne_milieu, colonne_milieu = obtenir_coordonnees_milieu(
+            ligne_base, colonne_base, ligne_finale, colonne_finale
+        )
+        grille[ligne_milieu][colonne_milieu] = " "
+        nb_pion_mange += 1
+        print("L'ordinateur a capturé un pion.")
+
+        while True:
+            captures_suivantes = lister_captures_pion(
+                ligne_finale, colonne_finale, LETTRE_COULEUR, grille
+            )
+
+            if len(captures_suivantes) == 0:
+                return nb_pion_mange
+
+            print("L'ordinateur est en plein enchaînement.")
+
+            prochain_coup = captures_suivantes[randint(0, len(captures_suivantes) - 1)]
+            nouvelle_ligne_finale, nouvelle_colonne_finale = prochain_coup
+
+            ligne_milieu, colonne_milieu = obtenir_coordonnees_milieu(
+                ligne_finale,
+                colonne_finale,
+                nouvelle_ligne_finale,
+                nouvelle_colonne_finale,
+            )
+            grille[ligne_milieu][colonne_milieu] = " "
+
+            grille[nouvelle_ligne_finale][nouvelle_colonne_finale] = LETTRE_COULEUR
+            grille[ligne_finale][colonne_finale] = " "
+
+            nb_pion_mange += 1
+            ligne_finale = nouvelle_ligne_finale
+            colonne_finale = nouvelle_colonne_finale
+
+
 def coups_possibles(grille: list[list[str]], tour_de_jeu: str) -> list[tuple]:
     LETTRE_COULEUR = tour_de_jeu[0]
     coups_simples = []
@@ -326,7 +393,7 @@ def coups_possibles(grille: list[list[str]], tour_de_jeu: str) -> list[tuple]:
                                 ((i, j), (ligne_finale, colonne_finale))
                             )
 
-    # Priorité à la capture
+    # Priorité à la capture car si on peut manger on doit le faire.
     if len(coups_captures) > 0:
         return coups_captures
     else:
@@ -419,8 +486,8 @@ def jeu(tour_de_jeu: str):
             nb_pions_captures_par_blancs,
         )
 
-        if type_jeu == "jcj":
-            nb_pions_mange = deplacer_pion(
+        if type_jeu == "jcj" or tour_de_jeu == "blancs":
+            nb_pions_manges = deplacer_pion(
                 grille,
                 tour_de_jeu,
                 nb_pions_captures_par_noirs,
@@ -428,14 +495,14 @@ def jeu(tour_de_jeu: str):
             )
         else:
             # Faire la liste des coups possibles et appliquer le déplacement.
-            ...
+            nb_pions_manges = deplacer_pion_ia_naive(grille, tour_de_jeu)
 
         if tour_de_jeu == "blancs":
-            nb_pions_captures_par_blancs += nb_pions_mange
+            nb_pions_captures_par_blancs += nb_pions_manges
             tour_de_jeu = "noirs"
 
         else:
-            nb_pions_captures_par_noirs += nb_pions_mange
+            nb_pions_captures_par_noirs += nb_pions_manges
             tour_de_jeu = "blancs"
 
         if nb_pions_captures_par_blancs >= 12:
