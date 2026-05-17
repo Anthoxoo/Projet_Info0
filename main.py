@@ -55,7 +55,6 @@ def creer_grille_fin_partie() -> list[list]:
 
 
 def est_dans_grille(ligne: str, colonne: int, grille: list[list]):
-
     # Si la ligne donnée par l'utilisateur n'est pas dans le dictionnaire (= lettres autorisées)
     if ligne not in LETTRE_VALEUR.keys():
         return False
@@ -73,7 +72,6 @@ def est_dans_grille(ligne: str, colonne: int, grille: list[list]):
 
 
 def est_au_bon_format(message: str) -> bool:
-
     if len(message) != 2:
         return False
 
@@ -92,7 +90,6 @@ def est_au_bon_format(message: str) -> bool:
 
 
 def saisie_coordonnees(grille: list[list]) -> tuple:
-
     while True:  # Boucle tant que l'utilisateur n'a pas rentré une information valide qui menerait à un return -> sortie de fonction
         reponse_utilisateur = str(input("Veuillez entrez des coordonnées : ")).upper()
 
@@ -152,6 +149,7 @@ def analyser_distance_diagonale(
 def obtenir_coordonnees_milieu(
     ligne_base: int, colonne_base: int, ligne_finale: int, colonne_finale: int
 ) -> tuple[int, int]:
+
     # Fait la moyenne pour trouver la case survolée lors d'un saut
     ligne_milieu = (ligne_base + ligne_finale) // 2
     colonne_milieu = (colonne_base + colonne_finale) // 2
@@ -161,6 +159,7 @@ def obtenir_coordonnees_milieu(
 def selectionner_pion_depart(
     grille: list[list], lettre_couleur: str
 ) -> tuple[str, int, int]:
+
     # Gère la boucle de sélection du pion (s'assure que le joueur choisit SA couleur)
     print("Quel pion souhaitez-vous déplacer ?")
 
@@ -221,7 +220,6 @@ def deplacer_pion(
     LETTRE_COULEUR = tour_de_jeu[0]
     nb_pion_mange = 0
 
-    # 1. Sélection sécurisée du pion (grâce à la sous-fonction)
     pion_joueur_actif, ligne_base, colonne_base = selectionner_pion_depart(
         grille, LETTRE_COULEUR
     )
@@ -340,7 +338,7 @@ def deplacer_pion_ia_naive(grille: list[list], tour_de_jeu: str) -> int:
             )
 
             if len(captures_suivantes) == 0:
-                return nb_pion_mange
+                break
 
             print("L'ordinateur est en plein enchaînement.")
 
@@ -361,6 +359,8 @@ def deplacer_pion_ia_naive(grille: list[list], tour_de_jeu: str) -> int:
             nb_pion_mange += 1
             ligne_finale = nouvelle_ligne_finale
             colonne_finale = nouvelle_colonne_finale
+
+    return nb_pion_mange
 
 
 def coups_possibles(grille: list[list[str]], tour_de_jeu: str) -> list[tuple]:
