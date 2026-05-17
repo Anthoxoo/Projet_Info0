@@ -445,6 +445,7 @@ def afficher_grille(
     nb_pions_captures_noirs: int,
     nb_pions_captures_blancs: int,
 ):
+
     # print(f"...") permet de mettre une variable dans un print et d'éviter de faire print("..." + variable + "...")
 
     lettres = ["H", "G", "F", "E", "D", "C", "B", "A"]
@@ -590,10 +591,24 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
         assert analyser_distance_diagonale(2, 2, 4, 3) == 0  # Mouvement de cavalier
 
     def test_obtenir_coordonnees_milieu():
-        # On vérifie que la moyenne mathématique calcule bien le point central
         assert obtenir_coordonnees_milieu(2, 2, 4, 4) == (3, 3)
         assert obtenir_coordonnees_milieu(4, 2, 2, 4) == (3, 3)
         assert obtenir_coordonnees_milieu(5, 5, 3, 3) == (4, 4)
+
+    def test_peut_capturer():
+        grille_test = [
+            [" ", " ", " ", " ", " ", " ", " ", " "],
+            [" ", " ", " ", " ", " ", " ", " ", " "],
+            [" ", " ", " ", "b", " ", " ", " ", " "],
+            [" ", " ", "n", " ", " ", " ", " ", " "],
+            [" ", " ", " ", " ", " ", " ", " ", " "],
+            [" ", " ", " ", " ", " ", " ", " ", " "],
+            [" ", " ", " ", " ", " ", " ", " ", " "],
+            [" ", " ", " ", " ", " ", " ", " ", " "],
+        ]
+        assert peut_capturer(2, 3, "b", grille_test)
+        assert peut_capturer(3, 2, "n", grille_test)
+        assert not peut_capturer(0, 0, "b", grille_test)
 
     # Appel des sous-fonctions de test
     test_est_au_bon_format()
@@ -602,6 +617,7 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
     test_est_meme_couleur()
     test_analyser_distance_diagonale()
     test_obtenir_coordonnees_milieu()
+    test_peut_capturer()
 
     print(" TESTS OK")
 
