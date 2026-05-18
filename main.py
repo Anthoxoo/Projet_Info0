@@ -611,6 +611,20 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
         assert obtenir_coordonnees_milieu(4, 2, 2, 4) == (3, 3)
         assert obtenir_coordonnees_milieu(5, 5, 3, 3) == (4, 4)
 
+    def test_est_mouvement_vers_avant():
+        # Test pour les blancs
+        assert est_mouvement_vers_avant("b", 5, 4)
+        assert est_mouvement_vers_avant("b", 5, 3)
+        assert not est_mouvement_vers_avant("b", 5, 6)
+        assert not est_mouvement_vers_avant("b", 5, 5)
+        # Tests pour les noirs
+        assert est_mouvement_vers_avant("n", 2, 3)
+        assert est_mouvement_vers_avant("n", 2, 4)
+        assert not est_mouvement_vers_avant("n", 2, 1)
+        assert not est_mouvement_vers_avant("n", 2, 2)
+
+        assert not est_mouvement_vers_avant("z", 1, 2)
+
     def test_peut_capturer():
         grille_test = [
             [" ", " ", " ", " ", " ", " ", " ", " "],
@@ -633,6 +647,7 @@ def test():  # Fonction de test principale, appelle chacune des petites fonction
     test_est_meme_couleur()
     test_analyser_distance_diagonale()
     test_obtenir_coordonnees_milieu()
+    test_est_mouvement_vers_avant()
     test_peut_capturer()
 
     print(" TESTS OK")
