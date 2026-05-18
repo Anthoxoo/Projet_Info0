@@ -1,3 +1,13 @@
-Pour ia naive :
-- Faire une fonction qui prend tout les pions d'un joueur, prendre les coups possibles et mettre les couples (pion, destination) dans une liste et en prendre un au hasard
--
+Faire le description en s'aidant de tous les commits git pour dire ce qu'on a fait pour x atelier.
+Faire en sorte que lorsque le joueur choisi un pion, on regarde les possibilités si il n'en a pas on lui iterdit de choisir le pion.
+Faire une option de rédition.
+Faire des tests pour les fonctions qui n'en n'ont pas.
+
+Faire une fontion pour :
+grille[ligne_finale][colonne_finale] = pion_joueur_actif
+grille[ligne_base][colonne_base] = " "
+Et refactor / réduire nb de ligne / optimiser le code le plus possible.
+
+Améliorer l'algo de l'ia pour le rendre plus heuristique
+
+SI TEMPS : permettre de modifier la taille du plateau.
