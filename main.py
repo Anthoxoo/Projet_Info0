@@ -146,6 +146,16 @@ def analyser_distance_diagonale(
     return 0
 
 
+def est_mouvement_vers_avant(
+    couleur_pion: str, ligne_base: int, ligne_finale: int
+) -> bool:
+    if couleur_pion == "b":
+        return ligne_finale < ligne_base  # Les blancs montent (index diminue)
+    elif couleur_pion == "n":
+        return ligne_finale > ligne_base  # Les noirs descendent (index augmente)
+    return False
+
+
 def obtenir_coordonnees_milieu(
     ligne_base: int, colonne_base: int, ligne_finale: int, colonne_finale: int
 ) -> tuple[int, int]:
@@ -260,6 +270,12 @@ def deplacer_pion(
             if en_chainement:
                 print(
                     "Mouvement interdit : lors d'un enchainement, vous êtes obligé de capturer !"
+                )
+                continue
+
+            if not est_mouvement_vers_avant(LETTRE_COULEUR, ligne_base, ligne_finale):
+                print(
+                    "Mouvement invalide : un pion simple ne peut avancer que vers l'avant !"
                 )
                 continue
 
