@@ -171,18 +171,26 @@ def selectionner_pion_depart(
 ) -> tuple[str, int, int]:
 
     # Gère la boucle de sélection du pion (s'assure que le joueur choisit SA couleur)
-    print("Quel pion souhaitez-vous déplacer ?")
 
     while True:
+        print("\nQuel pion souhaitez-vous déplacer ?")
+
         pion_joueur_actif, ligne_base, colonne_base = demander_saisie_pion_a_deplacer(
             grille
         )
 
-        if est_meme_couleur(lettre_couleur, pion_joueur_actif):
+        possibilités = coups_possible_pour_pion_donne(
+            grille, ligne_base, colonne_base, lettre_couleur
+        )
+        if len(possibilités) == 0:
+            print("Le pion que voulez sélectionner n'a pas de coup possible.")
+
+        elif est_meme_couleur(lettre_couleur, pion_joueur_actif):
             return pion_joueur_actif, ligne_base, colonne_base
 
-        if pion_joueur_actif == " ":
+        elif pion_joueur_actif == " ":
             print("Cette case est vide, veuillez sélectionner un de vos pions.")
+
         else:
             print("Ce pion adverse ne vous appartient pas.")
 
@@ -377,6 +385,32 @@ def deplacer_pion_ia_naive(grille: list[list], tour_de_jeu: str) -> int:
             colonne_finale = nouvelle_colonne_finale
 
     return nb_pion_mange
+
+
+def coups_possible_pour_pion_donne(
+    grille: list[list[str]], ligne_pion: int, colonne_pion: int, tour_de_jeu: str
+) -> list:
+    LETTRE_COULEUR = tour_de_jeu[0]
+    coups_simples = []
+    coups_captures = lister_captures_pion(
+        ligne_pion, colonne_pion, LETTRE_COULEUR, grille
+    )
+
+    directions_simples = []
+    if LETTRE_COULEUR == "b":
+        directions_simples = [(-1, -1), (-1, 1)]
+    elif LETTRE_COULEUR == "n":
+        directions_simples = [(1, -1), (1, 1)]
+
+    for diff_i, diff_j in directions_simples:
+        ligne_finale = ligne_pion + diff_i
+        colonne_finale = colonne_pion + diff_j
+
+        if 0 <= ligne_finale < 8 and 0 <= colonne_finale < 8:
+            if grille[ligne_finale][colonne_finale] == " ":
+                coups_simples.append((ligne_finale, colonne_finale))
+
+    return coups_captures if len(coups_captures) > 0 else coups_simples
 
 
 def coups_possibles(grille: list[list[str]], tour_de_jeu: str) -> list[tuple]:
