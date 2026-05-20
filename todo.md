@@ -1,5 +1,4 @@
 Faire le description en s'aidant de tous les commits git pour dire ce qu'on a fait pour x atelier.
-Faire en sorte que lorsque le joueur choisi un pion, on regarde les possibilités si il n'en a pas on lui iterdit de choisir le pion.
 Faire une option de rédition.
 Faire des tests pour les fonctions qui n'en n'ont pas.
 
